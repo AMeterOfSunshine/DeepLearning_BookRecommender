@@ -66,3 +66,25 @@ ratings_book_df = ratings_df.merge(books_df, how = 'left', on = 'book_id')
 cols = [col for col in ratings_book_df.columns if col not in ratings_df.columns and col not in ['book_id','title', 'authors', 'language_code']]
 ratings_book_df.drop(cols, axis= 1, inplace = True)
 
+count_ratings = ratings_book_df.groupby('book_id')['rating'].count()
+
+count_ratings
+
+top300books = count_ratings.sort_values(ascending = False).index.values[:300]
+top300books.dtype
+
+books_df['book_id'].dtype
+
+bias_books = m1.bias([str(book) for book in top300books])
+bias_books.shape
+
+book_names = {}
+for book in top300books:
+  book_names[book] = books_df.iloc[book, 10]
+
+names_with_bias = pd.DataFrame({'bookName': book_names.values(), 'bias': bias_books}, columns=['bookName', 'bias'])
+books_avg_bias = names_with_bias.groupby(['bookName']).agg({'bias': 'sum'})
+
+books_avg_bias
+
+data.classes
