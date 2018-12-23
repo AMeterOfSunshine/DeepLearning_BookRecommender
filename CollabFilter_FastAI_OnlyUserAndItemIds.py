@@ -33,22 +33,36 @@ m.recorder.plot_metrics
 
 m.recorder.plot()
 
-m.opt = optim.Adam(params = m.model.parameters(), lr = 0.5)
-#m.opt.mom = 0.9
-m.fit(3, lr = 0.5, wd = 1e-5) #PULL CODE IN SPYDER  AND SEE OPTIM WRAPPER USAGE , TRY WITH ADAM LATER AND ALSO WEIGHT DECAY AND MOMENTUM
+m.opt = optim.Adam(params = m.model.parameters(), lr = 0.03)
+m.opt.mom = 0.9
+m.fit(3, lr = 0.03, wd = 1e-5) #PULL CODE IN SPYDER  AND SEE OPTIM WRAPPER USAGE , TRY WITH ADAM LATER AND ALSO WEIGHT DECAY AND MOMENTUM
 #TRY WITH BOTH ADAM AND SGD
 
 #with SGD optimization
 m1 = collab_learner(data, n_factors = 50, y_range = (1,5), metrics = [exp_rmspe])
 m1.opt = optim.SGD(params = m1.model.parameters(), lr = 0.5, momentum = 0.9)
 m1.opt.mom = 0.9
-m1.fit(3, lr = 0.05)
+m1.fit(3, lr = 0.03)
 
 #SGD performs way better
 #TRY ONCE WITH SAME WEiGHT DECAY
 
 #1.  interpret embeddings
 #2. Create columnar model using the metatdata, and compare the 2 models on a metric
+#3 scrape the web data from good reads website
 
 m1.model.i_weight #analyzing movie categories
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
+
+#perform inner join with books
+books_df = pd.read_csv('goodbooks-10k/books.csv')
+
+books_df.columns
+
+ratings_df.columns
+
+ratings_book_df = ratings_df.merge(books_df, how = 'left', on = 'book_id')
+
+cols = [col for col in ratings_book_df.columns if col not in ratings_df.columns and col not in ['book_id','title', 'authors', 'language_code']]
+ratings_book_df.drop(cols, axis= 1, inplace = True)
+
